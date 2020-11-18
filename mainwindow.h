@@ -5,15 +5,20 @@
 #include <QIntValidator>
 #include <QDebug>
 #include <QHostInfo>
-#include <unistd.h>
-#include <netdb.h>
 #include <QTcpSocket>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QtConcurrent>
 #include <QHostAddress>
+#include <unistd.h>
+
+// For Linux
+//#include <netdb.h>
+
+// For Windows
+#include <winsock.h>
+
 #include "scanresult.h"
-using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -41,7 +46,6 @@ private:
     unsigned int m_countClosed;
     unsigned int m_countChecked;
 
-    void checkPort( int portmin,int portmax, string ip);
     QString getOwnIP();
     /*
      * getService

@@ -62,7 +62,12 @@ void MainWindow::execute()
             qDebug() << QHostAddress(ip).toString();
             QFutureWatcher<ScanResult> *watcher = new QFutureWatcher<ScanResult>;
             connect(watcher, SIGNAL(finished()), this, SLOT(doScanFinished()));
-            QFuture<ScanResult> future = QtConcurrent::run(asyncScan, QHostAddress(ip).toString(), ui->linePortStart->text().toInt());
+            QFuture<ScanResult> future;
+            try {
+                future = QtConcurrent::run(asyncScan, QHostAddress(ip).toString(), ui->linePortStart->text().toInt());
+            } catch (...) {
+                qDebug() << "Concurrent Error!";
+            }
             watcher->setFuture(future);
         }
     } else {
@@ -186,8 +191,7 @@ void MainWindow::reset()
 
 QString MainWindow::getService(const char *protocol, const int portNumber)
 {
-
-    QString serviceName = "NA";
+    QString serviceName = "---";
     struct servent* serviceInfo;
     serviceInfo = getservbyport(htons(portNumber), protocol );
     if(serviceInfo)
